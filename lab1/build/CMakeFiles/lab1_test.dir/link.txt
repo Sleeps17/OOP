@@ -1,0 +1,1 @@
+/usr/bin/g++ -g CMakeFiles/lab1_test.dir/test/test_count.cpp.o -o lab1_test  liblab1_lib.a -lgtest -lgtest_main 

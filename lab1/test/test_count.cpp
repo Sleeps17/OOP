@@ -1,0 +1,15 @@
+#include <gtest/gtest.h>
+#include "../include/count.hpp"
+
+TEST(CountTest, CountVowelLettersTest) {
+    EXPECT_EQ(count_vowels_in_word("hello"), 2);
+    EXPECT_EQ(count_vowels_in_word("world"), 1);
+    EXPECT_EQ(count_vowels_in_word("Hello"), -3);
+    EXPECT_EQ(count_vowels_in_word(""), -2);
+    EXPECT_EQ(count_vowels_in_word("aeoiu"), 5);
+}
+
+int main(int argc, char** argv) {
+    testing::InitGoogleTest(&argc, argv);
+    return RUN_ALL_TESTS();
+}
