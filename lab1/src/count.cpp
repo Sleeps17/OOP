@@ -1,5 +1,3 @@
-#include<stdlib.h>
-#include<string.h>
 #include<iostream>
 #include "../include/count.hpp"
 
@@ -11,9 +9,9 @@ bool is_vowel(char letter) {
     return false;
 }
 
-bool is_valid_input(const char* input) {
+bool is_valid_input(const std::string& input) {
 
-    int len = strlen(input);
+    int len = input.length();
     for(int i = 0; i < len; ++i) {
         if(int(input[i]) != tolower(input[i])) {
             return false;
@@ -23,18 +21,14 @@ bool is_valid_input(const char* input) {
     return true;
 }
 
-int count_vowels_in_word(const char* input) {
-    if(input == NULL) {
+int count_vowels_in_word(const std::string& input) {
+    int len = input.length();
+    if(len == 0) {
         return -1;
     }
 
-    int len = strlen(input);
-    if(len == 0) {
-        return -2;
-    }
-
     if(!is_valid_input(input)) {
-        return -3;
+        return -2;
     }
 
     int count = 0;

@@ -4,8 +4,8 @@
 TEST(CountTest, CountVowelLettersTest) {
     EXPECT_EQ(count_vowels_in_word("hello"), 2);
     EXPECT_EQ(count_vowels_in_word("world"), 1);
-    EXPECT_EQ(count_vowels_in_word("Hello"), -3);
-    EXPECT_EQ(count_vowels_in_word(""), -2);
+    EXPECT_EQ(count_vowels_in_word("Hello"), -2);
+    EXPECT_EQ(count_vowels_in_word(""), -1);
     EXPECT_EQ(count_vowels_in_word("aeoiu"), 5);
 }
 
