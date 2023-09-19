@@ -1,5 +1,5 @@
 #include<iostream>
-#include "./include/count.hpp"
+#include "count.hpp"
 
 #define RED_TEXT "\033[1;31m"
 #define ORANGE_TEXT "\033[1;33m"

@@ -1,5 +1,5 @@
 #include<iostream>
-#include "../include/count.hpp"
+#include "count.hpp"
 
 bool is_vowel(char letter) {
     if (letter == 'a' || letter == 'e' || letter == 'i' || letter == 'o' || letter == 'u') {

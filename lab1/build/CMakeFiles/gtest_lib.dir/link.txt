@@ -1,2 +1,0 @@
-/usr/bin/ar qc libgtest_lib.a CMakeFiles/gtest_lib.dir/src/count.cpp.o
-/usr/bin/ranlib libgtest_lib.a

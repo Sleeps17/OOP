@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "../include/count.hpp"
+#include "count.hpp"
 
 TEST(CountTest, CountVowelLettersTest) {
     EXPECT_EQ(count_vowels_in_word("hello"), 2);
