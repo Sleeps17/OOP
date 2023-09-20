@@ -15,15 +15,15 @@ int main() {
         int count = count_vowels_in_word(input);
 
         if (count == -1){
-            std::cerr << RED_TEXT << "ERROR: the input len is zero " << RESET_TEXT << '\n';
+            std::cerr << RED_TEXT << "ERROR: the input len is zero " << RESET_TEXT << std::endl;
         } else if(count == -2) {
-            std:: cerr << ORANGE_TEXT << "WARNING: input contains capital letters" << RESET_TEXT <<'\n';
+            std:: cerr << ORANGE_TEXT << "WARNING: input contains capital letters" << RESET_TEXT <<std::endl;
         } else {
-            std::cout << GREEN_TEXT << "ANS: This string contains " << count << " vowel letters" <<RESET_TEXT << '\n';
+            std::cout << GREEN_TEXT << "ANS: This string contains " << count << " vowel letters" <<RESET_TEXT << std::endl;
         }
     }
 
-    std::cout << "\nEnd of input" << '\n';
+    std::cout << "\nEnd of input" << std::endl;
 
     return 0;
 }
