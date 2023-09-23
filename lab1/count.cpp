@@ -1,7 +1,7 @@
 #include<iostream>
 #include "count.hpp"
 
-bool is_vowel(char letter) {
+bool is_vowel(const char& letter) {
     if (letter == 'a' || letter == 'e' || letter == 'i' || letter == 'o' || letter == 'u' || letter == 'y') {
         return true;
     }
