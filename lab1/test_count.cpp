@@ -7,6 +7,7 @@ TEST(CountTest, CountVowelLettersTest) {
     EXPECT_EQ(count_vowels_in_word("Hello"), -2);
     EXPECT_EQ(count_vowels_in_word(""), -1);
     EXPECT_EQ(count_vowels_in_word("aeoiu"), 5);
+    EXPECT_EQ(count_vowels_in_word("my room so cute"), 6);
 }
 
 int main(int argc, char** argv) {
