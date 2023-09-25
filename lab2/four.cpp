@@ -1,13 +1,38 @@
 #include"four.hpp"
 #include<string.h>
+#include<exception>
+#include<algorithm>
 
+// Приватный метод для реалокации памяти под базовый массив
+void Four::reallocate(const size_t& _cap){
+    unsigned char* copy = new unsigned char[cap];
+    memcpy(copy, digits, cap*sizeof(unsigned char));
+
+    delete[] digits;
+
+    digits = new unsigned char[_cap];
+    memset(digits, 1, _cap);
+    memcpy(digits, copy, cap*sizeof(unsigned char));
+    delete[] copy;
+    cap = _cap;
+}
+
+// Кострукторы
 Four::Four(): len(0), cap(0), digits(nullptr){}
-Four::Four(const unsigned char* _digits): len(strlen(reinterpret_cast<const char*>(_digits))), cap(2*len), digits(new unsigned char[cap]){
+Four::Four(const unsigned char* _digits)
+    : len(strlen(reinterpret_cast<const char*>(_digits))), 
+      cap(2*len), 
+      digits(new unsigned char[cap]) 
+{
     for(int i = 0; i < len; ++i){
         digits[i] = _digits[len - 1 - i];
     } 
 }
-Four::Four(const std::initializer_list<unsigned char>& _digits): len(_digits.size()), cap(2*len), digits(new unsigned char[cap]) {
+Four::Four(const std::initializer_list<unsigned char>& _digits)
+    : len(_digits.size()), 
+      cap(2*len), 
+      digits(new unsigned char[cap]) 
+{
     memset(digits, 1, cap);
     int i = len - 1;
     for(auto& elem : _digits) {
@@ -15,7 +40,11 @@ Four::Four(const std::initializer_list<unsigned char>& _digits): len(_digits.siz
         i--;
     }
 }
-Four::Four(const std::string& str): len(str.length()), cap(2*len), digits(new unsigned char[cap]) {
+Four::Four(const std::string& str)
+    : len(str.length()), 
+      cap(2*len), 
+      digits(new unsigned char[cap]) 
+{
     memset(digits, 1, cap);
     int i = len - 1;
     for(auto& elem : str) {
@@ -24,9 +53,12 @@ Four::Four(const std::string& str): len(str.length()), cap(2*len), digits(new un
     }
     digits[len] = '\0';
 }
-Four::Four(const Four& other): len(other.lenght()), cap(other.capacity()), digits(new unsigned char[cap]) {
-    const auto& data = other.get();
-    std::copy(data, data + cap, digits);
+Four::Four(const Four& other)
+    : len(other.lenght()), 
+      cap(other.capacity()), 
+      digits(new unsigned char[cap]) 
+{
+    std::copy(other.digits, other.digits + cap, digits);
 }
 Four::Four(Four&& other) noexcept {
     len = other.len;
@@ -35,17 +67,18 @@ Four::Four(Four&& other) noexcept {
 
     other.len = 0;
     other.cap = 0;
-    delete[] other.digits;
     other.digits = nullptr;
 }
 
+// Деструктор
 Four::~Four() {
-    delete []digits;
+    delete[] digits;
     len = 0;
     cap = 0;
     digits = nullptr;
 }
 
+// Арифметические операторы 
 Four& Four::operator=(const Four& other) {
 
     if(this != &other) {
@@ -98,11 +131,9 @@ Four& Four::operator++() {
             digits[len] = '1';
             len++;
         } else {
-            auto tmp = digits;
-            delete[] digits;
-            cap *= 2;
-            digits = new unsigned char[cap];
-            std::copy(tmp, tmp+len, digits);
+            (*this).reallocate(cap*2);
+            digits[len] = '1';
+            len++;
         }
 
     }
@@ -135,8 +166,81 @@ Four& Four::operator--() {
 
     return *this;
 }
+Four& Four::operator+=(const Four& num) {
 
+    if (num.len > cap) {
+        (*this).reallocate(num.cap);
+    }
 
+    for(int i = 0; i < num.len; i++) {
+        digits[i] += (num.digits[i] - '0');
+    }
+
+    int gap = 0;
+    for(int i = 0; i < len; i++) {
+        digits[i] += gap;
+
+        gap = (digits[i] - '0') / 4;
+        digits[i] = '0' + (digits[i] - '0')%4;
+    }
+
+    return (*this);
+}
+Four& Four::operator-=(const Four& num) {
+
+    // Если num > *this кинуть исключение
+
+    for(int i = 0; i < num.len; i++) {
+
+        if(digits[i] >= num.digits[i]) {
+            digits[i] = '0' + (digits[i] - num.digits[i]);
+        } else {
+            digits[i+1]--;
+            digits[i] = '0' + (((digits[i] - '0') + 4) - (num.digits[i] - '0'));
+        } 
+    }
+
+    if (digits[len - 1] == '0') {
+        digits[len-1] = '\0';
+        len--;
+    }
+
+    return *this;
+
+}
+Four& Four::operator*=(const Four& num) {
+    
+    int degree = static_cast<int>(num);
+    while(degree > 1) {
+        (*this) += (*this);
+        degree--;
+    }
+
+    return *this;
+}
+Four& Four::operator/=(const Four& num) {
+    
+    Four ans{"0"};
+
+    while((*this) > num) {
+        ans++;
+        (*this) -= num;
+    }
+
+    (*this) = ans;
+    
+    return *this;
+}
+Four& Four::operator%=(const Four& num) {
+
+    while((*this) >= num) {
+        (*this) -= num;
+    }
+
+    return *this;
+}
+
+// Логические операторы
 bool Four::operator==(const Four& other) {
 
     if (len != other.len) {
@@ -181,21 +285,69 @@ bool Four::operator>=(const Four& other) {
     return ((*this) > other) || ((*this) == other);
 }
 
-std::ostream& operator<<(std::ostream& os,  const Four& num){
-    
-  for(int i = num.len - 1; i >= 0; --i) {
-    os << num.digits[i];
-  }
+// Операторы друзья
+Four operator+(const Four& left, const Four& right) {
+    Four ans = left;
+    ans += right;
 
-  return os;
+    return ans;
 }
-std::istream& operator>>(std::istream& in, Four& num) {
+Four operator-(const Four& left, const Four& right) {
+
+    //Не забыть про exeption
+
+    Four ans =left;
+    ans -= right;
+    return ans;
+}
+Four operator*(const Four& left, const Four& right) {
+    Four ans =left;
+    ans *= right;
+    return ans;
+}
+Four operator/(const Four& left, const Four& right) {
+    Four ans =left;
+    ans /= right;
+    return ans;
+}
+Four operator%(const Four& left, const Four& right) {
+    Four ans = left;
+    ans %= right;
+    return ans;
+}
+std::istream& operator>>(std::istream& is, Four& num) {
     std::string s;
-    in >> s;
+    is >> s;
     num = Four{s};
-    return in;
+    return is;
+}
+std::ostream& operator<<(std::ostream& os, const Four& num) {
+    std::string s = static_cast<std::string>(num);
+
+    reverse(s.begin(), s.end());
+
+    return os << s;
 }
 
+// Операторы каста
+Four::operator int() const{
+    
+    int res = 0;
+    int multyplier = 1;
+    
+    for(int i = 0; i < len; i++) {
+        res += (digits[i] - '0')*multyplier;
+        multyplier *= 4;
+    }
+
+    return res;
+}
+Four::operator std::string() const {
+    std::string s{reinterpret_cast<const char*>(digits)};
+    return s;
+}
+
+// Методы-члены
 unsigned char* Four::get() const {
     return this->digits;
 }

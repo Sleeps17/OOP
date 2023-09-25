@@ -7,6 +7,9 @@ class Four {
     size_t len;
     size_t cap;
     unsigned char* digits;
+
+    // Приватный метод для реалокации памяти под базовый массив
+    void reallocate(const size_t&);
   
   public:
     // Конструкторы
@@ -17,7 +20,7 @@ class Four {
     Four(const Four&);
     Four(Four&&) noexcept;
 
-    //Деструктор
+    // Деструктор
     virtual ~Four() noexcept;
 
     // Опрераторы-члены
@@ -31,12 +34,14 @@ class Four {
     Four& operator-=(const Four&);
     Four& operator*=(const Four&);
     Four& operator/=(const Four&);
+    Four& operator%=(const Four&);
 
-    // Методы друзья
+    // Операторы друзья
     friend Four operator+(const Four&, const Four&);
     friend Four operator-(const Four&, const Four&);
     friend Four operator*(const Four&, const Four&);
     friend Four operator/(const Four&, const Four&);
+    friend Four operator%(const Four&, const Four&);
     friend std::istream& operator>>(std::istream&, Four&);
     friend std::ostream& operator<<(std::ostream&,  const Four&);
 
@@ -47,6 +52,10 @@ class Four {
     bool operator>(const Four&);
     bool operator<=(const Four&);
     bool operator>=(const Four&);
+
+    // Операторы каста
+    operator int() const;
+    operator std::string() const;
 
     // Методы-члены 
     unsigned char* get() const;
