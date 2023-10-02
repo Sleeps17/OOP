@@ -10,10 +10,13 @@ class Four {
 
     // Приватный метод для реалокации памяти под базовый массив
     void reallocate(const size_t&);
+    // Приватный  метод для проверки числа на то, принадлежит ли она четверичной сис.счисления или нет
+    void check(const unsigned char) const;
   
   public:
     // Конструкторы
-    Four();
+    Four() noexcept;
+    Four(size_t, unsigned char);
     Four(const unsigned char*);
     Four(const std::initializer_list<unsigned char>&);
     Four(const std::string&);
@@ -24,9 +27,9 @@ class Four {
     virtual ~Four() noexcept;
 
     // Опрераторы-члены
-    Four& operator=(const Four&);
+    Four& operator=(const Four&) noexcept;
     Four& operator=(Four&&) noexcept;
-    Four operator++(int);
+    Four operator++(int) ;
     Four& operator++();
     Four operator--(int);
     Four& operator--();
@@ -36,31 +39,31 @@ class Four {
     Four& operator/=(const Four&);
     Four& operator%=(const Four&);
 
+    // Логические операторы
+    bool operator==(const Four&) const noexcept;
+    bool operator!=(const Four&) const noexcept;
+    bool operator<(const Four&) const noexcept;
+    bool operator>(const Four&) const noexcept;
+    bool operator<=(const Four&) const noexcept;
+    bool operator>=(const Four&) const noexcept;
+
     // Операторы друзья
     friend Four operator+(const Four&, const Four&);
     friend Four operator-(const Four&, const Four&);
     friend Four operator*(const Four&, const Four&);
     friend Four operator/(const Four&, const Four&);
     friend Four operator%(const Four&, const Four&);
-    friend std::istream& operator>>(std::istream&, Four&);
-    friend std::ostream& operator<<(std::ostream&,  const Four&);
-
-    // Логические операторы
-    bool operator==(const Four&);
-    bool operator!=(const Four&);
-    bool operator<(const Four&);
-    bool operator>(const Four&);
-    bool operator<=(const Four&);
-    bool operator>=(const Four&);
+    friend std::istream& operator>>(std::istream&, Four&) noexcept;
+    friend std::ostream& operator<<(std::ostream&,  const Four&) noexcept;
 
     // Операторы каста
-    operator int() const;
-    operator std::string() const;
+    operator int() const noexcept;
+    operator std::string() const noexcept;
 
     // Методы-члены 
-    unsigned char* get() const;
-    size_t lenght() const;
-    size_t capacity() const;
+    unsigned char* get() const noexcept;
+    size_t lenght() const noexcept;
+    size_t capacity() const noexcept;
 
 };
 
