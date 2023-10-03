@@ -93,7 +93,6 @@ Four::Four(const Four& other)
       cap(other.capacity()), 
       digits(new unsigned char[cap]) 
 {
-    memset(digits, '0', cap*sizeof(unsigned char));
     memcpy(digits, other.digits, cap*sizeof(unsigned char));
 }
 Four::Four(Four&& other) noexcept {
@@ -121,7 +120,6 @@ Four& Four::operator=(const Four& other) noexcept {
         len = other.len;
         cap = other.cap;
         digits = new unsigned char[cap];
-        memset(digits, '0', cap);
         memcpy(digits, other.digits, cap*sizeof(unsigned char));
     }
 
