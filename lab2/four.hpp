@@ -10,7 +10,7 @@ class Four {
 
     // Приватный метод для реалокации памяти под базовый массив
     void reallocate(const size_t&);
-    // Приватный  метод для проверки числа на то, принадлежит ли она четверичной сис.счисления или нет
+    // Приватный  метод для проверки сивола на то, принадлежит ли он четверичной сис.счисления или нет
     void check(const unsigned char) const;
   
   public:
@@ -29,7 +29,7 @@ class Four {
     // Опрераторы-члены
     Four& operator=(const Four&) noexcept;
     Four& operator=(Four&&) noexcept;
-    Four operator++(int) ;
+    Four operator++(int);
     Four& operator++();
     Four operator--(int);
     Four& operator--();
@@ -61,7 +61,6 @@ class Four {
     operator std::string() const noexcept;
 
     // Методы-члены 
-    unsigned char* get() const noexcept;
     size_t lenght() const noexcept;
     size_t capacity() const noexcept;
 
