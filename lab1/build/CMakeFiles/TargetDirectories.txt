@@ -1,0 +1,5 @@
+/home/pasha/Study/OOP/lab1/build/CMakeFiles/lab1_lib.dir
+/home/pasha/Study/OOP/lab1/build/CMakeFiles/lab1_exe.dir
+/home/pasha/Study/OOP/lab1/build/CMakeFiles/lab1_test.dir
+/home/pasha/Study/OOP/lab1/build/CMakeFiles/edit_cache.dir
+/home/pasha/Study/OOP/lab1/build/CMakeFiles/rebuild_cache.dir
