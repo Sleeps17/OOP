@@ -2,11 +2,11 @@
 #include"four.hpp"
 
 int main(){
-    Four b{};
-    std::cin >> b;
+    Four number;
 
-    std::cout << b.get() << '\n';
-    unsigned char a = 'a';
-    std::cout << a;
+    std::cin >> number;
 
+    Four result = Four("22") + number;
+    
+    std::cout << result << std::endl;
 }
