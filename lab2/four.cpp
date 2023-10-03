@@ -1,7 +1,5 @@
 #include"four.hpp"
 #include<string.h>
-#include<exception>
-#include<algorithm>
 #include<iostream>
 
 // Приватный метод для реалокации памяти под базовый массив
@@ -21,10 +19,11 @@ void Four::reallocate(const size_t& _cap){
 
     delete[] copy;
 }
+// Приватный метод для проверки сииволов на диапазон
 void Four::check(const unsigned char _digit) const {
 
     if (_digit > '3' || _digit < '0') {
-        throw std::logic_error("not a four number");
+        throw std::invalid_argument("not a four number");
     }
 }
 
@@ -53,9 +52,14 @@ Four::Four(size_t _len, unsigned char fill): len(_len), cap(2*len), digits(new u
     check(fill);
     memset(digits, fill, cap*sizeof(unsigned char));
 }
-// Разобраться, что делать  если лист пустой
-Four::Four(const std::initializer_list<unsigned char>& _digits): len(_digits.size()), cap(2*len), digits(new unsigned char[cap]) 
+Four::Four(const std::initializer_list<unsigned char>& _digits): len(_digits.size()), cap(2*len), digits(nullptr) 
 {
+    if(_digits.size() == 0) {
+        throw std::invalid_argument("initializer list cannot be empty");
+    } else {
+        digits = new unsigned char[cap];
+    }
+
     memset(digits, '0', cap*sizeof(unsigned char));
     for(auto& elem : _digits) {
         check(elem);
@@ -66,12 +70,13 @@ Four::Four(const std::initializer_list<unsigned char>& _digits): len(_digits.siz
         i--;
     }
 }
-// разобраться, что делать если строка пустая
-Four::Four(const std::string& str)
-    : len(str.length()), 
-      cap(2*len), 
-      digits(new unsigned char[cap]) 
+Four::Four(const std::string& str): len(str.length()), cap(2*len), digits(nullptr) 
 {
+    if(len == 0) {
+        throw std::invalid_argument("string cannot be empty");
+    } else {
+        digits = new unsigned char[cap];
+    }
     memset(digits, '0', cap*sizeof(unsigned char));
     for(auto& elem : str) {
         check(elem);
@@ -191,8 +196,12 @@ Four& Four::operator--() {
             digits[i] = '3';
         } else {
             if (i == len - 1 && digits[i] == '1') {
-                digits[i] = 1;
-                break;
+                if (len == 1) {
+                    digits[i] = '0';
+                } else {
+                    digits[i] = '\0';
+                    len--;
+                }
             } else {
                 digits[i]--;
                 break;
@@ -245,12 +254,21 @@ Four& Four::operator-=(const Four& num) {
         if(digits[i] >= num.digits[i]) {
             digits[i] = '0' + (digits[i] - num.digits[i]);
         } else {
-            digits[i+1]--;
-            digits[i] = '0' + (((digits[i] - '0') + 4) - (num.digits[i] - '0'));
+            int j = i + 1;
+            while(j < len && digits[j] == '0') {
+                j++;
+            }
+            while(j != i) {
+                digits[j]--;
+                j--;
+                digits[j] = '0' + (digits[j] - '0') + 4;
+            }
+
+            digits[i] = '0' + (digits[i] - num.digits[i]);
         } 
     }
 
-    if (digits[len - 1] == '0') {
+    while(digits[len-1] == '0' && len != 1) {
         digits[len-1] = '\0';
         len--;
     }
@@ -261,8 +279,10 @@ Four& Four::operator-=(const Four& num) {
 Four& Four::operator*=(const Four& num) {
     
     int degree = static_cast<int>(num);
-    if(degree == 0) {
-        (*this) = Four{"0"};
+    if(degree == 0 || *this == Four{"0"}) {
+        if (degree == 0) {
+            (*this) = Four{"0"};
+        }
         return *this;
     }
     Four tmp = *this;
@@ -278,12 +298,17 @@ Four& Four::operator/=(const Four& num) {
     if (num == Four{"0"}) {
         throw std::logic_error("Cannot divided by zero");
     }
+
+    if(*this == Four{"0"}) {
+        return *this;
+    }
     
     Four ans{"0"};
 
-    while((*this) > num) {
-        ans++;
+    while((*this) >= num) {
+        ++ans;
         (*this) -= num;
+        //std::cout << "DIVIDE " << digits << std::endl;
     }
 
     (*this) = ans;
@@ -333,6 +358,8 @@ bool Four::operator<(const Four& other) const noexcept {
     for(int i = len - 1; i >= 0; --i) {
         if(other.digits[i] < digits[i]) {
             return false;
+        } else if (other.digits[i] > digits[i]) {
+            return true;
         }
     }
 
@@ -407,16 +434,13 @@ Four::operator int() const noexcept {
 }
 Four::operator std::string() const noexcept {
     std::string s(len, '0');
-    for(int i = len - 1; i >= 0; i++) {
+    for(int i = len - 1; i  >= 0; --i) {
         s[len - 1 - i] = digits[i];
     }
     return s;
 }
 
 // Методы-члены
-unsigned char* Four::get() const noexcept {
-    return this->digits;
-}
 size_t Four::lenght() const noexcept {
     return this -> len;
 }
