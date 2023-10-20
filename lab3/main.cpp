@@ -111,18 +111,19 @@ int main() {
 
     for(int i = 0; i < arr.length(); i++) {
         arr[i] -> hello();
-        arr[i] -> print();
+        std::cout << *(arr[i]) << std::endl;
     }
 
     arr.erase(1);
     for(int i = 0; i < arr.length(); i++) {
         arr[i] -> hello();
-        arr[i] -> print();
+        std::cout << *(arr[i]) << std::endl;
     }
 
     arr.insert(&t, 0);
     for(int i = 0; i < arr.length(); i++) {
         arr[i] -> hello();
-        arr[i] -> print();
+        std::cout << *(arr[i]) << std::endl;
     }
+
 }   

@@ -13,6 +13,24 @@ void Rhomb::check(const Point& _upper, const Point& _lower, const Point& _left, 
         throw std::invalid_argument("Points do not form a rhombus");
     }
 } 
+void Rhomb::print(std::ostream& os) const noexcept {
+    os << "Upper: " << this -> upper << std::endl;
+    os << "Lower: " << this -> lower << std::endl;
+    os << "Left: " << this -> left << std::endl;
+    os << "Right: " << this -> right << std::endl;
+}
+void Rhomb::input(std::istream& is) noexcept {
+    std::cout << "Введите верхнюю точку ромба: ";
+    is >> this -> upper;
+    std::cout << "введите нижнюю точку ромба: ";
+    is >> this -> lower;
+    std::cout << "введите левую точку ромба: ";
+    is >> this -> left;
+    std::cout << "введите правую точку ромба: ";
+    is >> this -> right;
+    std::cout << "Введите имя фигуры: ";
+    is >> this -> figure_name;
+}
 
 Rhomb::Rhomb(const Point& _upper, const Point& _lower, const Point& _left, const Point& _right, const std::string& name): upper(_upper), lower(_lower), left(_left), right(_right), Figure(name){
     check(_upper, _lower, _left, _right);
@@ -38,9 +56,6 @@ Point Rhomb::center() const noexcept {
 }
 void Rhomb::hello() const noexcept {
     std::cout << "Hello, I am " << figure_name << std::endl;
-}
-void Rhomb::print() const noexcept {
-    std::cout << *this << std::endl;
 }
 
 Rhomb::operator double () const noexcept {
@@ -68,33 +83,23 @@ Rhomb& Rhomb::operator=(Rhomb&& other) noexcept {
 
     return *this;
 }
-bool Rhomb::operator==(const Rhomb& other) const noexcept {
-    return upper == other.upper && lower == other.lower && right == other.right && left == other.left;
+bool Rhomb::operator==(const Figure& other) const noexcept {
+    const Rhomb* r = dynamic_cast<const Rhomb*>(&other);
+    if (r == nullptr) {
+        return false;
+    }
+    return upper == r -> upper && lower == r -> lower && right == r -> right && left == r -> left;
 }
-bool Rhomb::operator!=(const Rhomb& other) const noexcept {
+bool Rhomb::operator!=(const Figure& other) const noexcept {
     return !(*this == other);
 }
 
 std::ostream& operator<<(std::ostream& os, const Rhomb& rhomb) noexcept {
-    os << "Upper: " << rhomb.upper << std::endl;
-    os << "Lower: " << rhomb.lower << std::endl;
-    os << "Left: " << rhomb.left << std::endl;
-    os << "Right: " << rhomb.right << std::endl;
+    rhomb.print(os);
     return os;
 }
 std::istream& operator>>(std::istream& is, Rhomb& rhomb) {
-    std::cout << "Введите верхнюю точку ромба: ";
-    is >> rhomb.upper;
-    std::cout << "введите нижнюю точку ромба: ";
-    is >> rhomb.lower;
-    std::cout << "введите левую точку ромба: ";
-    is >> rhomb.left;
-    std::cout << "введите правую точку ромба: ";
-    is >> rhomb.right;
-
-    rhomb.figure_name = "rhomb";
-
+    rhomb.input(is);
     Rhomb::check(rhomb.upper, rhomb.lower, rhomb.left, rhomb.right);
-    
     return is;
 }

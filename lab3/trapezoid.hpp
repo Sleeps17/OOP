@@ -6,13 +6,15 @@
 
 class Trapezoid final: public Figure {
 
-  private:
+  protected:
     Point left_lower;
     Point right_lower;
     Point left_upper;
     Point right_upper;
 
     static void check(const Point&, const Point&, const Point&, const Point&);
+    virtual void print(std::ostream&) const noexcept override;
+    virtual void input(std::istream&) noexcept override;
 
   public:
     Trapezoid() = default;
@@ -24,13 +26,12 @@ class Trapezoid final: public Figure {
     virtual double perimetr() const noexcept override;
     virtual Point center() const noexcept override;
     virtual void hello() const noexcept override;
-    virtual void print() const noexcept override;
 
     explicit virtual operator double() const noexcept;
     Trapezoid& operator=(const Trapezoid&) noexcept;
     Trapezoid& operator=(Trapezoid&&) noexcept;
-    bool operator==(const Trapezoid&) const noexcept;
-    bool operator!=(const Trapezoid&) const noexcept;
+    virtual bool operator==(const Figure&) const noexcept override;
+    virtual bool operator!=(const Figure&) const noexcept override;
 
     friend std::ostream& operator<<(std::ostream&, const Trapezoid&) noexcept;
     friend std::istream& operator>>(std::istream&, Trapezoid&);

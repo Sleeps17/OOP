@@ -21,6 +21,28 @@ void Pentagone::check(const Point& _left_lower, const Point& _left_middle, const
     }
 }
 
+void Pentagone::print(std::ostream& os) const noexcept {
+    os << "Left Lower: " << this -> left_lower << std::endl;
+    os << "Right Lower: " << this -> right_lower << std::endl;
+    os << "Left Middle: " << this -> left_middle << std::endl;
+    os << "Right Middle: " << this -> right_middle << std::endl;
+    os << "Upper: " << this -> upper << std::endl;
+}
+void Pentagone::input(std::istream& is) noexcept {
+    std::cout << "Введите левую нижнюю точку пятиугольника: ";
+    is >> this -> left_lower;
+    std::cout << "Введите правую нижнюю точку пятиугольника: ";
+    is >> this -> right_lower;
+    std::cout << "Введите левую среднюю точку пятиугольника: ";
+    is >> this -> left_middle;
+    std::cout << "Введите правую среднюю точку пятиугольника: ";
+    is >> this -> right_middle;
+    std::cout << "Введите верхнюю точку пятиугольника: ";
+    is >> this -> upper;
+    std::cout << "Введите имя фигуры: ";
+    is >> this -> figure_name;
+}
+
 
 Pentagone::Pentagone(const Point& _left_lower, const Point& _right_lower, const Point& _left_middle, const Point& _right_middle, const Point& _upper, const std::string& _figure_name):
     left_lower(Point{}),
@@ -64,10 +86,6 @@ void Pentagone::hello() const noexcept {
     std::cout << "Hello, I am " << figure_name << std::endl;
 }
 
-void Pentagone::print() const noexcept {
-    std::cout << *this << std::endl;
-}
-
 Pentagone::operator double() const noexcept {
     return this -> area();
 }
@@ -95,42 +113,27 @@ Pentagone& Pentagone::operator=(Pentagone&& other) noexcept {
 
     return *this;
 }
-bool Pentagone::operator==(const Pentagone& other) const noexcept {
-    return left_lower == other.left_lower && 
-    left_middle == other.left_middle && 
-    right_lower == other.right_lower && 
-    right_middle == other.right_middle && 
-    upper == other.upper;
+bool Pentagone::operator==(const Figure& other) const noexcept {
+    const Pentagone* p = dynamic_cast<const Pentagone*>(&other);
+    if (p == nullptr) {
+        return false;
+    }
+    return left_lower == p -> left_lower && 
+    left_middle == p -> left_middle && 
+    right_lower == p -> right_lower && 
+    right_middle == p -> right_middle && 
+    upper == p -> upper;
 }
-bool Pentagone::operator!=(const Pentagone& other) const noexcept {
+bool Pentagone::operator!=(const Figure& other) const noexcept {
     return !(*this == other);
 }
 
 std::ostream& operator<<(std::ostream& os, const Pentagone& pent) noexcept {
-    os << "Left Lower: " << pent.left_lower << std::endl;
-    os << "Right Lower: " << pent.right_lower << std::endl;
-    os << "Left Middle: " << pent.left_middle << std::endl;
-    os << "Right Middle: " << pent.right_middle << std::endl;
-    os << "Upper: " << pent.upper << std::endl;
-
+    pent.print(os);
     return os;
 }
 std::istream& operator>>(std::istream& is, Pentagone& pent) {
-    std::cout << "Введите левую нижнюю точку пятиугольника: ";
-    is >> pent.left_lower;
-    std::cout << "Введите правую нижнюю точку пятиугольника: ";
-    is >> pent.right_lower;
-    std::cout << "Введите левую среднюю точку пятиугольника: ";
-    is >> pent.left_middle;
-    std::cout << "Введите правую среднюю точку пятиугольника: ";
-    is >> pent.right_middle;
-    std::cout << "Введите верхнюю точку пятиугольника: ";
-    is >> pent.upper;
-
-    pent.figure_name = "pentagone";
-
+    pent.input(is);
     Pentagone::check(pent.left_lower, pent.right_lower, pent.left_middle, pent.right_middle, pent.upper);
-
     return is;
-    
 }
