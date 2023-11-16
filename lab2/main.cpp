@@ -2,7 +2,8 @@
 #include"four.hpp"
 
 int main(){
-    Four number;
+    Four number = Four{"20"};
+    std::cout << number << std::endl;
 
     std::cin >> number;
 
