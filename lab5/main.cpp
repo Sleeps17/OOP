@@ -42,10 +42,10 @@ void makeMap<0>(my_map<int, int>& m) {
 }
 
 template<typename T>
-void print(const my_forward_list<T>& f) {
+void print(my_forward_list<T>& f) {
     std::cout << "_________________\n";
-    for(auto elem : f) {
-        std::cout << elem << " ";
+    for(auto it = f.begin(); it != f.end(); ++it) {
+        std::cout << *it << " ";
     }
     std::cout << std::endl;
 }
@@ -58,9 +58,11 @@ int main() {
 //        std::cout << it.first << " : " << it.second << "\n";
 //    }
 
-    my_forward_list<int> f = {1, 2, 3, 4, 5, 6, 7, 8, 9};
-    for(int i = 0; i < 5; ++i) {
+    my_forward_list<int> f(1, 2);
+    for(int i = 0; i < 2; ++i) {
         f.insert_after(f.before_begin(), i);
     }
+    std::vector<int> v = {1, 2, 3};
+    f.insert_after(f.before_begin(), v.begin(), v.end());
     print(f);
 }

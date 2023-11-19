@@ -25,7 +25,7 @@ struct Node {
 
 template<class T, class Allocator = std::allocator<T>>
 class forward_list {
-  
+
   public:
     using value_type            = T;
     using allocator_type        = Allocator;
@@ -40,26 +40,21 @@ class forward_list {
 
   private:
     Node<T>* createNode(const T& value) {
-        
-        Node<T>* newNode = std::allocator_traits<Allocator>::allocate(alloc, 1);
-        std::allocator_traits<Allocator>::construct(alloc, newNode, value);
-        
+
+        Node<T>* newNode = alloc.allocate(1);
+        newNode -> data = value;
+
         return newNode;
     }
 
     Node<T>* createDefaultNode() {
-        
+
         static_assert(std::is_default_constructible_v<T>);
 
-        Node<T>* newNode = std::allocator_traits<Allocator>::allocate(alloc, 1);
-        std::allocator_traits<Allocator>::construct(alloc, newNode, T());
-        
-        return newNode;
-    }
+        Node<T>* newNode = alloc.allocate(1);
+        newNode -> data = T();
 
-    void destroyNode(Node<T>* node) {
-        std::allocator_traits<Allocator>::destroy(alloc, node);
-        std::allocator_traits<Allocator>::deallocate(alloc, node, 1);
+        return newNode;
     }
 
     Node<T>* head;
@@ -148,7 +143,7 @@ class forward_list {
 
     // Конструкторы
     forward_list(): head(nullptr), size(0), alloc(Allocator()) {}
-    explicit forward_list(size_type _count, const T& _value, const allocator_type& _alloc = Allocator()): alloc(_alloc), head(nullptr), size(0) {
+    explicit forward_list(size_type _count, const T& _value): alloc(Allocator()), head(nullptr), size(0) {
 
         for (size_type i = 0; i < _count; ++i) {
             Node<T>* newNode = createNode(_value);
@@ -158,8 +153,7 @@ class forward_list {
 
         size = _count;
     }
-    explicit forward_list(const allocator_type& _alloc): alloc(_alloc), head(nullptr), size(0) {}  
-    explicit forward_list(size_type _count, const allocator_type& _alloc = Allocator()): alloc(_alloc), head(nullptr), size(0) {
+    explicit forward_list(size_type _count): alloc(Allocator()), head(nullptr), size(0) {
         for (size_type i = 0; i < _count; ++i) {
             Node<T>* newNode = createDefaultNode();
             newNode->next = head;
@@ -169,8 +163,8 @@ class forward_list {
         size = _count;
     }
     template<Iterable InputIt>
-    forward_list(InputIt first, InputIt last, const Allocator& _alloc = Allocator()) : alloc(_alloc), head(nullptr), size(0) {
-        
+    forward_list(InputIt first, InputIt last) : alloc(Allocator()), head(nullptr), size(0) {
+
         Node<T>* curr;
         size = std::distance(first, last);
 
@@ -186,7 +180,7 @@ class forward_list {
         }
     }
     // ???
-    forward_list(const forward_list<T, allocator_type>& other): head(nullptr), size(other.size), alloc(std::allocator_traits<Allocator>::select_on_container_copy_construction(other.alloc)) {
+    forward_list(const forward_list<T, allocator_type>& other): head(nullptr), size(other.size), alloc(Allocator()) {
 
         head = nullptr;
         Node<T>* otherHead = other.head;
@@ -204,12 +198,12 @@ class forward_list {
             otherHead = otherHead -> next;
         }
     }
-    // ???    
-    forward_list(forward_list<T, allocator_type>&& other) noexcept: head(other.head), size(other.size), alloc(other.alloc) {
+    // ???
+    forward_list(forward_list<T, allocator_type>&& other) noexcept: head(other.head), size(other.size), alloc(Allocator()) {
         other.head = nullptr;
         other.size = 0;
     }
-    forward_list(const std::initializer_list<T>& init, const Allocator& _alloc = Allocator()): head(nullptr), size(0), alloc(std::allocator_traits<Allocator>::select_on_container_copy_construction(_alloc)) {
+    forward_list(const std::initializer_list<T>& init): head(nullptr), size(0), alloc(Allocator()) {
         size = init.size();
 
         Node<T>* curr;
@@ -226,16 +220,14 @@ class forward_list {
         }
     }
 
-   ~forward_list() {    
-        this -> clear();
-    }
+   ~forward_list() = default;
 
     forward_list<T, allocator_type>& operator=(const forward_list<T, allocator_type>& other) {
         if (this == &other) {
             return *this;
         }
         this -> size = other.size;
-        this -> alloc = std::allocator_traits<Allocator>::select_on_container_copy_construction(other.alloc);
+        this -> alloc = Allocator();
 
         head = nullptr;
         Node<T>* otherNode = other.head;
@@ -256,7 +248,7 @@ class forward_list {
     forward_list<T, allocator_type>& operator=(forward_list<T, allocator_type>&& other) noexcept {
         this -> head = other.head;
         this -> size = other.size;
-        this -> alloc = other.alloc;
+        this -> alloc = Allocator();
 
         other.head = nullptr;
         other.size = 0;
@@ -265,7 +257,7 @@ class forward_list {
     }
 
     bool operator==(const forward_list<T, allocator_type>& other) const noexcept {
-        
+
         if (this -> lenght() != other.lenght()) {
             return false;
         }
@@ -284,7 +276,7 @@ class forward_list {
     bool operator!=(const forward_list<T, allocator_type>& other) const noexcept {
         return !(*this == other);
     }
-    
+
     void assign(size_type count, const T& value) {
         this -> clear();
         *this = forward_list<T, allocator_type>(count, value);
@@ -292,28 +284,27 @@ class forward_list {
     template<Iterable InputIt>
     void assign(InputIt first, InputIt last) {
         this -> clear();
-        *this = forward_list<T, allocator_type>(first, last, allocator_type());
+        *this = forward_list<T, allocator_type>(first, last);
     }
     void assign(const std::initializer_list<T>& ilist ) {
         this -> clear();
-        *this = forward_list<T, allocator_type>(ilist, allocator_type());
+        *this = forward_list<T, allocator_type>(ilist);
     }
     void clear() {
         while (head != nullptr) {
             Node<T>* temp = head;
             head = head->next;
-            std::allocator_traits<Allocator>::destroy(alloc, temp);
-            std::allocator_traits<Allocator>::deallocate(alloc, temp, 1);
+            alloc.deallocate(temp, 1);
         }
         size = 0;
     }
-    
+
     [[nodiscard]] bool empty() const noexcept {
         return size == 0;
     }
     [[nodiscard]] size_type lenght() const noexcept {
         return size;
-    }    
+    }
 
     iterator begin() {
         return iterator(head);
@@ -356,7 +347,7 @@ class forward_list {
             newNode -> next = pos.node -> next;
             pos.node -> next = newNode;
         }
-        
+
         return iterator(newNode);
     }
     iterator insert_after(const iterator pos, T&& value ) {
@@ -370,7 +361,7 @@ class forward_list {
             newNode -> next = pos.node -> next;
             pos.node -> next = newNode;
         }
-        
+
         return iterator(newNode);
 
     }
@@ -411,17 +402,17 @@ class forward_list {
         if (pos.node -> next == head) {
             Node<T>* tmp = head;
             head = head -> next;
-            destroyNode(tmp);
+            alloc.deallocate(tmp, 1);
         } else {
             Node<T>* tmp = pos.node -> next;
             pos.node -> next = tmp->next;
-            destroyNode(tmp);
+            alloc.deallocate(tmp, 1);
         }
-        
+
         return iterator(pos.node -> next);
     }
     iterator erase_after(const iterator first, const iterator last) {
-        
+
         if (first.node == last.node) {
             return last;
         }
@@ -451,7 +442,7 @@ class forward_list {
 
 /*
 bool operator==(const forward_list<T, allocator_type>& other) const noexcept {
-        
+
         if (this -> lenght() != other.lenght()) {
             return false;
         }

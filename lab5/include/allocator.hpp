@@ -32,16 +32,15 @@ namespace lab {
             }
 
             free_count = max_count;
-#ifdef DEBUG
+        #ifdef DEBUG
             std::cout << "I constructed\n";
-#endif
+        #endif
         }
 
         ~Allocator() {
-            // Нет необходимости очищать used_blocks и free_blocks, так как они будут автоматически очищены при выходе из области видимости
-#ifdef DEBUG
+        #ifdef DEBUG
             std::cout << "I destructed\n";
-#endif
+        #endif
         }
 
         template <class U>
@@ -56,9 +55,9 @@ namespace lab {
                 result = free_blocks[--free_count];
             }
 
-#ifdef DEBUG
+        #ifdef DEBUG
             std::cout << "I allocated\n";
-#endif
+        #endif
 
             return result;
         }
@@ -67,13 +66,12 @@ namespace lab {
             if (free_count < max_count) {
                 free_blocks[free_count++] = p;
             } else {
-                // Обработка ошибки - попытка освободить больше блоков, чем выделено
                 throw std::runtime_error("Attempt to deallocate more blocks than allocated");
             }
 
-#ifdef DEBUG
+        #ifdef DEBUG
             std::cout << "I deallocated\n";
-#endif
+        #endif
         }
 
         template <typename U, typename... Args>
@@ -85,7 +83,6 @@ namespace lab {
             if (p) {
                 p->~T();
             } else {
-                // Обработка ошибки - попытка удаления нулевого указателя
                 throw std::invalid_argument("Attempt to destroy a null pointer");
             }
         }
