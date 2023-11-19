@@ -3,6 +3,7 @@
 
 #include<memory>
 #include<type_traits>
+#include<iterator>
 
 namespace lab {
 
@@ -14,7 +15,8 @@ struct Node {
     T data;
     Node<T>* next;
     Node() = default;
-    Node(const T& _data): data(_data), next(nullptr) {}
+    explicit Node(const T& _data): data(_data), next(nullptr) {}
+    explicit Node(T&& _data): data(_data), next(nullptr) {}
 
     bool operator==(const Node<T>& other) {
         return data == other.data && next == other.next;
@@ -77,14 +79,16 @@ class forward_list {
         using reference_type        = const T&;
 
         const_iterator() = default;
-        const_iterator(const Node<T>* ptr) : node(ptr) {}
+        explicit const_iterator(const Node<T>* ptr) : node(ptr) {}
 
         reference_type operator*() const {
             return node->data;
         }
 
         const_iterator& operator++() {
-            node = node->next;
+            if (node) {
+                node = node -> next;
+            }
             return *this;
         }
 
@@ -115,14 +119,16 @@ class forward_list {
         using reference_type        = T&;
 
         iterator() = default;
-        iterator(Node<T>* ptr): node(ptr) {}
+        explicit iterator(Node<T>* ptr): node(ptr) {}
 
         reference_type operator*() {
             return node -> data;
         }
 
         iterator& operator++() {
-            this -> node = this -> node -> next;
+            if (node) {
+                node = node -> next;
+            }
             return *this;
         }
 
@@ -133,19 +139,15 @@ class forward_list {
         }
 
         bool operator==(const iterator other) {
-            return *(this -> node) == *(other.node);
+            return this -> node == other.node;
         }
         bool operator!=(const iterator other) {
             return !(*this == other);
         }
-
-        operator const_iterator() {
-            return const_iterator(this -> node);
-        }
     };
 
     // Конструкторы
-    forward_list() = default;
+    forward_list(): head(nullptr), size(0), alloc(Allocator()) {}
     explicit forward_list(size_type _count, const T& _value, const allocator_type& _alloc = Allocator()): alloc(_alloc), head(nullptr), size(0) {
 
         for (size_type i = 0; i < _count; ++i) {
@@ -157,7 +159,7 @@ class forward_list {
         size = _count;
     }
     explicit forward_list(const allocator_type& _alloc): alloc(_alloc), head(nullptr), size(0) {}  
-    forward_list(size_type _count, const allocator_type& _alloc = Allocator()): alloc(_alloc), head(nullptr), size(0) {
+    explicit forward_list(size_type _count, const allocator_type& _alloc = Allocator()): alloc(_alloc), head(nullptr), size(0) {
         for (size_type i = 0; i < _count; ++i) {
             Node<T>* newNode = createDefaultNode();
             newNode->next = head;
@@ -172,7 +174,7 @@ class forward_list {
         Node<T>* curr;
         size = std::distance(first, last);
 
-        for (auto it = first; it != last; ++it) {
+        for (Iterable auto it = first; it != last; ++it) {
             auto newNode = createNode(*it);
             if (!head) {
                 head = newNode;
@@ -226,10 +228,12 @@ class forward_list {
 
    ~forward_list() {    
         this -> clear();
-        this -> size = 0;
     }
 
     forward_list<T, allocator_type>& operator=(const forward_list<T, allocator_type>& other) {
+        if (this == &other) {
+            return *this;
+        }
         this -> size = other.size;
         this -> alloc = std::allocator_traits<Allocator>::select_on_container_copy_construction(other.alloc);
 
@@ -259,6 +263,27 @@ class forward_list {
 
         return *this;
     }
+
+    bool operator==(const forward_list<T, allocator_type>& other) const noexcept {
+        
+        if (this -> lenght() != other.lenght()) {
+            return false;
+        }
+
+        for(auto it1 = this -> begin(), it2 = other.begin(); it2 != other.end(); ++it1, ++it2) {
+
+            if (*it1 != *it2) {
+                return false;
+            }
+
+        }
+
+        return true;
+    }
+
+    bool operator!=(const forward_list<T, allocator_type>& other) const noexcept {
+        return !(*this == other);
+    }
     
     void assign(size_type count, const T& value) {
         this -> clear();
@@ -280,12 +305,13 @@ class forward_list {
             std::allocator_traits<Allocator>::destroy(alloc, temp);
             std::allocator_traits<Allocator>::deallocate(alloc, temp, 1);
         }
+        size = 0;
     }
     
-    bool empty() const noexcept {
+    [[nodiscard]] bool empty() const noexcept {
         return size == 0;
     }
-    size_type lenght() const noexcept {
+    [[nodiscard]] size_type lenght() const noexcept {
         return size;
     }    
 
@@ -311,11 +337,6 @@ class forward_list {
         Node<T>* before = createDefaultNode();
         before -> next = head;
         return iterator(before);
-    }
-    const_iterator before_begin() const noexcept {
-        auto before = createDefaultNode();
-        before -> next = head;
-        return const_iterator(before);
     }
     const_iterator cbefore_begin() const noexcept {
         auto before = createDefaultNode();
@@ -367,18 +388,14 @@ class forward_list {
     template<Iterable InputIt>
     iterator insert_after(const iterator pos, InputIt first, InputIt last) {
 
-        size += std::distance(first, last);
-
         iterator curr = pos;
-        for(auto it = first; it != last; ++it) {
+        for(InputIt it = first; it != last; ++it) {
             curr = insert_after(curr, *it);
         }
 
         return curr;
     }
     iterator insert_after(const iterator pos, std::initializer_list<T> ilist) {
-
-        size += ilist.size();
 
         iterator curr = pos;
         for(auto it = ilist.begin(); it != ilist.end(); ++it) {
@@ -431,3 +448,26 @@ class forward_list {
 
 }
 #endif
+
+/*
+bool operator==(const forward_list<T, allocator_type>& other) const noexcept {
+        
+        if (this -> lenght() != other.lenght()) {
+            return false;
+        }
+
+        for(auto it1 = this -> begin(), it2 = other.begin(); it2 != other.end(); ++it1, ++it2) {
+
+            if (*it1 != *it2) {
+                return false;
+            }
+
+        }
+
+        return true;
+    }
+
+    bool operator!=(const forward_list<T, allocator_type>& other) const noexcept {
+        return !(*this == other);
+    }
+*/
