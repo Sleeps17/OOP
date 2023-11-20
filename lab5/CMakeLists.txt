@@ -15,6 +15,7 @@ file(GLOB_RECURSE INCLUDE_SOURCES LIST_DIRECTORIES false ${INCLUDE_DIR}/*.hpp)
 add_executable(${CMAKE_PROJECT_NAME}_exe main.cpp
         include/forward_list.hpp
         include/allocator.hpp)
+
 enable_testing()
 add_executable(${CMAKE_PROJECT_NAME}_test ${TEST_SOURCES})
 add_test(MyTest lab5_test)

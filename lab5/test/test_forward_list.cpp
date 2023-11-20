@@ -10,7 +10,7 @@ template<typename T>
 using my_forward_list_allocator = lab::Allocator<lab::Node<T>, max_count>;
 
 template<typename T>
-using my_forward_list = lab::forward_list<T, std::allocator<lab::Node<T>>>;
+using my_forward_list = lab::forward_list<T, my_forward_list_allocator<T>>;
 
 TEST(TestForwardList, TestCountValueConstructor) {
     my_forward_list<int> f(7, 2);
@@ -33,7 +33,6 @@ TEST(TestForwardList, TestCountValueConstructor) {
 
     EXPECT_EQ(flag, true);
 }
-
 
 TEST(TestForwardList, TestCountDefaultValueConstructor) {
     my_forward_list<int> f(20);
@@ -78,7 +77,6 @@ TEST(TestForwardList, TestTwoIteratorsConstructor) {
 
     EXPECT_EQ(flag, true);
 }
-
 TEST(TestForwardList, TestInitializerListConstructor) {
     std::initializer_list<char> list = {'a', 'b', 'c', 'd', 'e', 'f', 'g'};
 
@@ -260,12 +258,26 @@ TEST(TestForwardList, TestEraseAfterPos) {
 }
 
 TEST(TestForwardList, TestEraseAfterBetweenTwoIterators) {
+    my_forward_list<int> f= {1, 2, 3, 4, 5};
+    std::vector<int> v = {10, 11, 12};
+    f.insert_after(f.before_begin(), v.begin(), v.end());
+    EXPECT_EQ(f, my_forward_list<int>({10, 11, 12, 1, 2, 3, 4, 5}));
 }
 
 TEST(TestForwardList, TestPushFront) {
+    my_forward_list<int> f = {1, 2, 3, 4, 5};
+    f.push_front(10);
+    EXPECT_EQ(f, my_forward_list<int>({10, 1, 2, 3, 4, 5}));
 
+    f.push_front(11);
+    EXPECT_EQ(f, my_forward_list<int>({11, 10, 1, 2, 3, 4, 5}));
 }
 
 TEST(TestForwardList, TestPopFront) {
+    my_forward_list<int> f = {1, 2, 3, 4, 5};
+    f.pop_front();
+    EXPECT_EQ(f, my_forward_list<int>({2, 3, 4, 5}));
 
+    f.pop_front();
+    EXPECT_EQ(f, my_forward_list<int>({3, 4, 5}));
 }
