@@ -3,6 +3,20 @@
 #include<cmath>
 #include<istream>
 
+void NPC::printType(std::ostream &os) const {
+    switch (NPCType(type)) {
+        case NPCType::OutlawType:
+            os << "Outlaw ";
+            break;
+        case NPCType::SquirrelType:
+            os << "Squirrel ";
+            break;
+        case NPCType::ElfType:
+            os << "Elf ";
+            break;
+    }
+}
+
 NPC::NPC(NPCType type, int x, int y): type(type), x(x), y(y) {}
 NPC::NPC(NPCType type, std::istream &is): type(type) {
     is >> x >> y;
@@ -25,11 +39,12 @@ void NPC::fightNotify(const std::shared_ptr<NPC>& defender, bool win) {
 }
 
 void NPC::save(std::ostream& os) const {
-    os << x << std::endl;
-    os << y << std::endl;
+    os << "x: " << x << std::endl;
+    os << "y: "<< y << std::endl;
 }
 
 std::ostream& operator<<(std::ostream &os, const NPC &npc) {
+    npc.printType(os);
     os << "{ x:" << npc.x << ", y:" << npc.y << "} ";
     return os;
 }

@@ -37,15 +37,15 @@ void Elf::print() const {
 }
 
 void Elf::save(std::ostream& os) const {
-    printType(os);
-    NPC::save(os);
+    os << *this;
 }
 
 std::ostream &operator<<(std::ostream& os, const Elf& elf) {
-    os << "Elf: " << *static_cast<const NPC *>(&elf) << std::endl;
+    os << *static_cast<const NPC *>(&elf) << std::endl;
     return os;
 }
 
+// VISITOR
 bool ElfVisitor::visit(const std::shared_ptr<Squirrel>& defender) const {
     return false;
 }

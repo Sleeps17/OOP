@@ -37,17 +37,15 @@ void Squirrel::print() const {
 }
 
 void Squirrel::save(std::ostream& os) const {
-    printType(os);
-    NPC::save(os);
+    os << *this;
 }
 
 std::ostream &operator<<(std::ostream& os, const Squirrel& squirrel) {
-    os << "Squirrel: " << *static_cast<const NPC *>(&squirrel) << std::endl;
+    os << *static_cast<const NPC *>(&squirrel) << std::endl;
     return os;
 }
 
 // VISITOR
-
 bool SquirrelVisitor::visit(const std::shared_ptr<Squirrel>& defender) const {
     return false;
 }

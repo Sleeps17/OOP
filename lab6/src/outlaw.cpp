@@ -36,12 +36,11 @@ void Outlaw::print() const {
 }
 
 void Outlaw::save(std::ostream &os) const {
-    printType(os);
-    NPC::save(os);
+    os << *this;
 }
 
 std::ostream &operator<<(std::ostream& os, const Outlaw& outlaw) {
-    os << "Outlaw: " << *static_cast<const NPC *>(&outlaw) << std::endl;
+    os << *static_cast<const NPC *>(&outlaw) << std::endl;
     return os;
 }
 

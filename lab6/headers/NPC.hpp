@@ -29,6 +29,8 @@ public:
 
 
 class NPC: public std::enable_shared_from_this<NPC>{
+private:
+    void printType(std::ostream& os) const;
 public:
     NPCType type;
     int x{0};
