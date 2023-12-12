@@ -10,8 +10,6 @@ public:
 };
 
 class Elf : public NPC{
-private:
-    void printType(std::ostream&) const;
 public:
     Elf(int, int);
     explicit Elf(std::istream&);

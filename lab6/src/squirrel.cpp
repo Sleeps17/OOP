@@ -1,20 +1,5 @@
 #include "squirrel.hpp"
 
-void Squirrel::printType(std::ostream& os) const {
-    switch (type) {
-        case NPCType::SquirrelType:
-            os << "Squirrel";
-            break;
-        case NPCType::OutlawType:
-            os << "Outlaw";
-            break;
-        case NPCType::ElfType:
-            os << "Elf";
-            break;
-
-    }
-}
-
 Squirrel::Squirrel(int _x, int _y): NPC(NPCType::SquirrelType, _x, _y) {}
 
 Squirrel::Squirrel(std::istream& is): NPC(NPCType::SquirrelType, is) {}

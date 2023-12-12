@@ -226,3 +226,75 @@ Elf { x:480, y:452}
 Murder --------
 Squirrel { x:249, y:49} 
 Elf { x:143, y:176} 
+
+Murder --------
+Squirrel { x:121, y:280} 
+Elf { x:435, y:276} 
+
+Murder --------
+Squirrel { x:121, y:280} 
+Elf { x:229, y:191} 
+
+Murder --------
+Squirrel { x:121, y:280} 
+Elf { x:299, y:57} 
+
+Murder --------
+Outlaw { x:458, y:183} 
+Squirrel { x:121, y:280} 
+
+Murder --------
+Outlaw { x:458, y:183} 
+Squirrel { x:33, y:306} 
+
+Murder --------
+Outlaw { x:458, y:183} 
+Squirrel { x:57, y:453} 
+
+Murder --------
+Elf { x:435, y:276} 
+Outlaw { x:458, y:183} 
+
+Murder --------
+Elf { x:325, y:57} 
+Outlaw { x:429, y:189} 
+
+Murder --------
+Elf { x:325, y:57} 
+Outlaw { x:226, y:394} 
+
+Murder --------
+Elf { x:325, y:57} 
+Outlaw { x:140, y:493} 
+
+Murder --------
+Elf { x:325, y:57} 
+Outlaw { x:445, y:228} 
+
+Murder --------
+Outlaw { x:52, y:4} 
+Squirrel { x:195, y:245} 
+
+Murder --------
+Outlaw { x:52, y:4} 
+Squirrel { x:267, y:51} 
+
+Murder --------
+Outlaw { x:52, y:4} 
+Squirrel { x:183, y:155} 
+
+Murder --------
+Squirrel { x:195, y:245} 
+Elf { x:426, y:213} 
+
+Murder --------
+Squirrel { x:195, y:245} 
+Elf { x:263, y:240} 
+
+Murder --------
+Squirrel { x:195, y:245} 
+Elf { x:311, y:260} 
+
+Murder --------
+Elf { x:426, y:213} 
+Outlaw { x:52, y:4} 

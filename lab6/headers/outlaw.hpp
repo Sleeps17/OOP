@@ -10,8 +10,6 @@ public:
 };
 
 class Outlaw : public NPC {
-private:
-    void printType(std::ostream&) const;
 public:
     Outlaw(int, int);
     explicit Outlaw(std::istream& is);

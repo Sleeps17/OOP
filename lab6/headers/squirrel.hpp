@@ -10,8 +10,6 @@ public:
 };
 
 class Squirrel : public NPC {
-private:
-    void printType(std::ostream&) const;
 public:
     Squirrel(int, int);
     explicit Squirrel(std::istream&);

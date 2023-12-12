@@ -1,20 +1,5 @@
 #include "elf.hpp"
 
-void Elf::printType(std::ostream& os) const {
-    switch (type) {
-        case NPCType::SquirrelType:
-            os << "Squirrel";
-            break;
-        case NPCType::OutlawType:
-            os << "Outlaw";
-            break;
-        case NPCType::ElfType:
-            os << "Elf";
-            break;
-
-    }
-}
-
 Elf::Elf(int _x, int _y): NPC(NPCType::ElfType, _x, _y) {}
 
 Elf::Elf(std::istream& is): NPC(NPCType::ElfType, is) {}

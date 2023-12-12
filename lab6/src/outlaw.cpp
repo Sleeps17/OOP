@@ -1,20 +1,5 @@
 #include "outlaw.hpp"
 
-void Outlaw::printType(std::ostream& os) const {
-    switch (type) {
-        case NPCType::SquirrelType:
-            os << "Squirrel";
-            break;
-        case NPCType::OutlawType:
-            os << "Outlaw";
-            break;
-        case NPCType::ElfType:
-            os << "Elf";
-            break;
-
-    }
-}
-
 Outlaw::Outlaw(int _x, int _y): NPC(NPCType::OutlawType, _x, _y) {}
 
 Outlaw::Outlaw(std::istream &is): NPC(NPCType::OutlawType, is) {}
