@@ -1,8 +1,5 @@
 #pragma once
 
-#include <fstream>
-#include <iostream>
-
 #include "NPC.hpp"
 
 class TextObserver: public NPCObserver {

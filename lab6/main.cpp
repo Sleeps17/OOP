@@ -1,18 +1,12 @@
-#include <memory>
 #include <unordered_map>
 #include <random>
-#include <iostream>
-#include <fstream>
 #include <utility>
-#include <set>
 
 #include "NPC.hpp"
 #include "squirrel.hpp"
 #include "outlaw.hpp"
 #include "elf.hpp"
 #include "factory.hpp"
-
-using set_t = std::set<std::shared_ptr<NPC>>;
 
 class DataSaver {
 private:

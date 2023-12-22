@@ -1,9 +1,11 @@
 #pragma once
 
-#include <memory>
-
-#include "observers.hpp"
 #include "NPC.hpp"
+#include "elf.hpp"
+#include "squirrel.hpp"
+#include "outlaw.hpp"
+#include "observers.hpp"
+
 
 class Factory {
 public:
@@ -11,13 +13,13 @@ public:
         std::shared_ptr<NPC> result;
         switch (npcType) {
             case NPCType::SquirrelType:
-                result = std::make_shared<Squirrel>(x, y);
+                result = std::static_pointer_cast<NPC>(std::make_shared<Squirrel>(x, y));
                 break;
             case NPCType::OutlawType:
-                result =  std::make_shared<Outlaw>(x, y);
+                result =  std::static_pointer_cast<NPC>(std::make_shared<Outlaw>(x, y));
                 break;
             case NPCType::ElfType:
-                result = std::make_shared<Elf>(x, y);
+                result = std::static_pointer_cast<NPC>(std::make_shared<Elf>(x, y));
                 break;
             default:
                 result =  nullptr;
@@ -34,13 +36,13 @@ public:
         std::shared_ptr<NPC> result;
         switch (npcType) {
             case NPCType::SquirrelType:
-                result = std::make_shared<Squirrel>(is);
+                result = std::static_pointer_cast<NPC>(std::make_shared<Squirrel>(is));
                 break;
             case NPCType::OutlawType:
-                result = std::make_shared<Outlaw>(is);
+                result = std::static_pointer_cast<NPC>(std::make_shared<Outlaw>(is));
                 break;
             case NPCType::ElfType:
-                result =  std::make_shared<Elf>(is);
+                result = std::static_pointer_cast<NPC>(std::make_shared<Elf>(is));
                 break;
             default:
                 result = nullptr;

@@ -3,6 +3,15 @@
 #include <iostream>
 #include <memory>
 #include <vector>
+#include <set>
+#include <fstream>
+#include <iostream>
+
+class Squirrel;
+class Elf;
+class Outlaw;
+class NPC;
+using set_t = std::set<std::shared_ptr<NPC>>;
 
 enum class NPCType {
     SquirrelType,
@@ -10,23 +19,12 @@ enum class NPCType {
     OutlawType,
 };
 
-class Squirrel;
-class Elf;
-class Outlaw;
-class NPC;
-
 class NPCObserver {
 public:
     virtual void onFight(const std::shared_ptr<NPC>&, const std::shared_ptr<NPC>&, bool) = 0;
 };
 
-class NPCVisitor {
-public:
-    [[nodiscard]] virtual bool visit(const std::shared_ptr<Squirrel>&) const = 0;
-    [[nodiscard]] virtual bool visit(const std::shared_ptr<Elf>&) const = 0;
-    [[nodiscard]] virtual bool visit(const std::shared_ptr<Outlaw>&) const = 0;
-};
-
+class NPCVisitor;
 
 class NPC: public std::enable_shared_from_this<NPC>{
 private:

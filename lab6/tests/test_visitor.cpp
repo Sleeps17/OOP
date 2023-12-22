@@ -1,48 +1,35 @@
-#include<gtest/gtest.h>
-
+#include <gtest/gtest.h>
 #include "NPC.hpp"
-#include "factory.hpp"
 #include "elf.hpp"
-#include "squirrel.hpp"
 #include "outlaw.hpp"
+#include "squirrel.hpp"
+#include "visitor.hpp"
 
-TEST(TestVisitor, TestFight) {
-    auto squirrel = Factory::Create(NPCType::SquirrelType, 3, 5);
-    auto otherSquirrel = Factory::Create(NPCType::SquirrelType, 3, 5);
-    auto elf = Factory::Create(NPCType::ElfType, 5, 7);
-    auto otherElf = Factory::Create(NPCType::ElfType, 5, 7);
-    auto outlaw = Factory::Create(NPCType::OutlawType, 7, 7);
-    auto otherOutlaw = Factory::Create(NPCType::OutlawType, 7, 7);
 
-    auto squirrelVisitor = std::make_shared<SquirrelVisitor>();
-    auto elfVisitor = std::make_shared<ElfVisitor>();
-    auto outlawVisitor = std::make_shared<OutlawVisitor>();
+class VisitorTest : public testing::Test {
+protected:
+    void SetUp() override {
+        elf = std::make_shared<Elf>(0, 15);
+        outlaw = std::make_shared<Outlaw>(50, 15);
+        squirrel = std::make_shared<Squirrel>(100, 15);
 
-    bool win = squirrel -> accept(elfVisitor, elf);
-    ASSERT_TRUE(win == false);
+        elf_visitor = std::make_shared<ElfVisitor>();
+        outlaw_visitor = std::make_shared<OutlawVisitor>();
+        squirrel_visitor = std::make_shared<SquirrelVisitor>();
+    }
+    std::shared_ptr<NPC> elf, outlaw, squirrel;
+    std::shared_ptr<NPCVisitor> elf_visitor, outlaw_visitor, squirrel_visitor;
+};
 
-    win = squirrel -> accept(outlawVisitor, outlaw);
-    ASSERT_TRUE(win == true);
-
-    win = squirrel -> accept(squirrelVisitor, otherSquirrel);
-    ASSERT_TRUE(win == false);
-
-    win = elf -> accept(elfVisitor, otherElf);
-    ASSERT_TRUE(win == false);
-
-    win = elf -> accept(outlawVisitor, outlaw);
-    ASSERT_TRUE(win == false);
-
-    win = elf -> accept(squirrelVisitor, otherSquirrel);
-    ASSERT_TRUE(win == true);
-
-    win = outlaw -> accept(elfVisitor, otherElf);
-    ASSERT_TRUE(win == true);
-
-    win = outlaw -> accept(outlawVisitor, outlaw);
-    ASSERT_TRUE(win == false);
-
-    win = outlaw ->accept(squirrelVisitor, otherSquirrel);
-    ASSERT_TRUE(win == false);
-
+TEST_F(VisitorTest, VisitTest) {
+    ASSERT_FALSE(elf_visitor->visit(std::static_pointer_cast<Elf>(elf)));
+    ASSERT_TRUE(elf_visitor->visit(std::static_pointer_cast<Outlaw>(outlaw)));
+    ASSERT_FALSE(elf_visitor->visit(std::static_pointer_cast<Squirrel>(squirrel)));
+    ASSERT_FALSE(outlaw_visitor->visit(std::static_pointer_cast<Elf>(elf)));
+    ASSERT_FALSE(outlaw_visitor->visit(std::static_pointer_cast<Outlaw>(outlaw)));
+    ASSERT_TRUE(outlaw_visitor->visit(std::static_pointer_cast<Squirrel>(squirrel)));
+    ASSERT_TRUE(squirrel_visitor->visit(std::static_pointer_cast<Elf>(elf)));
+    ASSERT_FALSE(squirrel_visitor->visit(std::static_pointer_cast<Outlaw>(outlaw)));
+    ASSERT_FALSE(squirrel_visitor->visit(std::static_pointer_cast<Squirrel>(squirrel)));
 }
+

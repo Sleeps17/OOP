@@ -1,15 +1,9 @@
 #pragma once
 
 #include "NPC.hpp"
+#include "visitor.hpp"
 
-class OutlawVisitor : public NPCVisitor {
-public:
-    [[nodiscard]] bool visit(const std::shared_ptr<Squirrel>&) const override;
-    [[nodiscard]] bool visit(const std::shared_ptr<Elf>&) const override;
-    [[nodiscard]] bool visit(const std::shared_ptr<Outlaw>&) const override;
-};
-
-class Outlaw : public NPC {
+class Outlaw final : public NPC {
 public:
     Outlaw(int, int);
     explicit Outlaw(std::istream& is);
