@@ -3,9 +3,6 @@
 #include <utility>
 
 #include "NPC.hpp"
-#include "squirrel.hpp"
-#include "outlaw.hpp"
-#include "elf.hpp"
 #include "factory.hpp"
 
 class DataSaver {
@@ -49,12 +46,6 @@ public:
     }
 };
 
-std::unordered_map<int, std::shared_ptr<NPCVisitor>> visitors = {
-    {0, std::make_shared<SquirrelVisitor>()},
-    {1, std::make_shared<ElfVisitor>()},
-    {2, std::make_shared<OutlawVisitor>()}
-};
-
 std::unordered_map<std::string, NPCType> types = {
     {"squirrel", NPCType::SquirrelType},
     {"elf", NPCType::ElfType},
@@ -68,7 +59,7 @@ set_t Fight(const set_t& array, size_t distance)
     for (const auto &attacker : array) {
         for (const auto &defender : array) {
             if ((attacker != defender) && (dead_list.find(defender) == dead_list.end()) && (attacker->is_close(defender, distance))) {
-                bool win = defender ->accept(visitors[int(attacker->type)], attacker);
+                bool win = defender ->accept(attacker);
                 if (win) {
                     dead_list.insert(defender);
                 }

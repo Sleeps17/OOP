@@ -4,15 +4,14 @@ Squirrel::Squirrel(int _x, int _y): NPC(NPCType::SquirrelType, _x, _y) {}
 
 Squirrel::Squirrel(std::istream& is): NPC(NPCType::SquirrelType, is) {}
 
-bool Squirrel::accept(const std::shared_ptr<NPCVisitor>& AttackerVisitor, const std::shared_ptr<NPC>& attacker) const {
+bool Squirrel::accept(const std::shared_ptr<NPC>& attacker) const {
+    auto AttackerVisitor = VisitorFactory::CreateVisitor(attacker -> type);
 
-    std::shared_ptr<const NPC> npcConst = shared_from_this();
-    std::shared_ptr<NPC> npc = std::const_pointer_cast<NPC>(npcConst);
+    std::shared_ptr<NPC> npc = std::const_pointer_cast<NPC>(shared_from_this());
     std::shared_ptr<Squirrel> defender = std::dynamic_pointer_cast<Squirrel>(npc);
 
     bool win = (AttackerVisitor -> visit(defender));
-
-    attacker ->fightNotify(defender, win);
+    attacker -> fightNotify(defender, win);
 
     return win;
 }
@@ -28,17 +27,4 @@ void Squirrel::save(std::ostream& os) const {
 std::ostream &operator<<(std::ostream& os, const Squirrel& squirrel) {
     os << *static_cast<const NPC *>(&squirrel) << std::endl;
     return os;
-}
-
-// VISITOR
-bool SquirrelVisitor::visit(const std::shared_ptr<Squirrel>& defender) const {
-    return false;
-}
-
-bool SquirrelVisitor::visit(const std::shared_ptr<Elf>& defender) const {
-    return true;
-}
-
-bool SquirrelVisitor::visit(const std::shared_ptr<Outlaw>& defender) const {
-    return false;
 }

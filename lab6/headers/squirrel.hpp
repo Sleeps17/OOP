@@ -10,7 +10,7 @@ public:
 
     void print() const override;
     void save(std::ostream&) const override;
-    bool accept(const std::shared_ptr<NPCVisitor>&, const std::shared_ptr<NPC>&) const override;
+    bool accept(const std::shared_ptr<NPC>&) const override;
 
     friend std::ostream& operator<<(std::ostream&, const Squirrel&);
 

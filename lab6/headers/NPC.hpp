@@ -42,7 +42,7 @@ public:
     void fightNotify(const std::shared_ptr<NPC>&, bool);
 
     virtual bool is_close(const std::shared_ptr<NPC>&, size_t) const;
-    virtual bool accept(const std::shared_ptr<NPCVisitor>&, const std::shared_ptr<NPC>&) const = 0;
+    virtual bool accept(const std::shared_ptr<NPC>&) const = 0;
 
     virtual void print() const = 0;
     virtual void save(std::ostream&) const;
