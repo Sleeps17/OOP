@@ -57,6 +57,7 @@ void NPC::save(std::ostream& os) const {
 
 std::ostream& operator<<(std::ostream &os, const NPC &npc) {
     npc.printType(os);
+    os << npc.name << " ";
     os << "{ x:" << npc.x << ", y:" << npc.y << "} ";
     return os;
 }

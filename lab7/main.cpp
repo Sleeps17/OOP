@@ -131,8 +131,8 @@ int main() {
     std::vector<std::string> names = {"Clarence", "Justin", "Travis", "Scott", "Natalie", "Valerie", "David", "Charles", "George", "Laura"};
 
     std::cout << "Generating ..." << std::endl;
-    for (size_t i = 0; i < 10; ++i)
-        array.insert(Factory::Create(NPCType(dis(gen) % 3), names[i], dis(gen) % maxX, dis(gen) % maxY));
+    for (size_t i = 0; i < 100; ++i)
+        array.insert(Factory::Create(NPCType(dis(gen) % 3), names[i % names.size()], dis(gen) % maxX, dis(gen) % maxY));
 
     std::cout << "Starting list:" << std::endl << array;
 
@@ -147,19 +147,16 @@ int main() {
                     npc->move(dx, dy, maxX, maxY);
                 }
             }
-            // lets fight
+
             for (const std::shared_ptr<NPC>& npc : array)
                 for (const std::shared_ptr<NPC>& other : array)
                     if (other != npc && npc->isAlive() && other->isAlive() && npc->isClose(other)) {
                         FightManager::get().add_event({npc, other});
                     }
 
-            std::this_thread::sleep_for(std::chrono::milliseconds(50));
+            std::this_thread::sleep_for(std::chrono::milliseconds(500));
         }
     });
-
-    move_thread.join();
-    fight_thread.join();
 
     while (true) {
         const int grid{20}, step_x{maxX / grid}, step_y{maxY / grid};
@@ -176,7 +173,7 @@ int main() {
                             fields[i + grid * j] = 'E';
                             break;
                         case NPCType::OutlawType:
-                            fields[i + grid * j] = 'B';
+                            fields[i + grid * j] = 'O';
                             break;
                         case NPCType::SquirrelType:
                             fields[i + grid * j] = 'S';
@@ -202,7 +199,10 @@ int main() {
             }
             std::cout << std::endl;
         }
-        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
     }
+
+    fight_thread.join();
+    move_thread.join();
 
 }
